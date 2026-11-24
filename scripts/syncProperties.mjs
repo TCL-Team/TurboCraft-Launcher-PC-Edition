@@ -155,20 +155,22 @@ export const BuildKeys = {
   if (fs.existsSync(ebPath)) {
     const eb = JSON.parse(fs.readFileSync(ebPath, 'utf8'));
     const safeSlug = launcherName.replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-|-$/g, '') || 'TurboCraft';
+    const asciiProductName = launcherAppName.replace(/[—–]/g, '-').replace(/\s+/g, ' ').trim();
     eb.appId = launcherAppId;
-    eb.productName = launcherAppName;
+    eb.productName = asciiProductName;
     eb.copyright = launcherCopyright;
-    if (eb.win) {
-      eb.win.artifactName = `${safeSlug}-PC-\${version}-\${arch}.\${ext}`;
+    if (eb.nsis) {
+      eb.nsis.shortcutName = launcherName;
+      eb.nsis.artifactName = `${safeSlug}-PC-\${version}-Setup-\${arch}.\${ext}`;
     }
     if (eb.portable) {
-      eb.portable.artifactName = `${safeSlug}-PC-\${version}-Portable.\${ext}`;
+      eb.portable.artifactName = `${safeSlug}-PC-\${version}-Portable-\${arch}.\${ext}`;
     }
     if (eb.linux) {
-      eb.linux.artifactName = `${safeSlug}-PC-\${version}-\${arch}.\${ext}`;
+      eb.linux.artifactName = `${safeSlug}-PC-\${version}-Linux-\${arch}.\${ext}`;
     }
     if (eb.mac) {
-      eb.mac.artifactName = `${safeSlug}-PC-\${version}-\${arch}.\${ext}`;
+      eb.mac.artifactName = `${safeSlug}-PC-\${version}-macOS-\${arch}.\${ext}`;
     }
     const ebFormatted = `${JSON.stringify(eb, null, 2)}\n`;
     if (fs.readFileSync(ebPath, 'utf8') !== ebFormatted) {

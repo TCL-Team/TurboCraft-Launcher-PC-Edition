@@ -1,6 +1,7 @@
 {
   "appId": "com.tcl.mc.pc",
-  "productName": "TurboCraft Launcher — PC Edition",
+  "productName": "TurboCraft Launcher - PC Edition",
+  "executableName": "TurboCraftLauncher",
   "copyright": "Copyright (C) 2026 TCL Team (GPL-3.0)",
   "directories": {
     "buildResources": "build-resources",
@@ -17,8 +18,7 @@
       {
         "target": "nsis",
         "arch": [
-          "x64",
-          "arm64"
+          "x64"
         ]
       },
       {
@@ -27,26 +27,30 @@
           "x64"
         ]
       }
-    ],
-    "artifactName": "TurboCraft-Launcher-PC-${version}-${arch}.${ext}"
+    ]
   },
   "nsis": {
     "oneClick": false,
+    "unicode": true,
     "allowToChangeInstallationDirectory": true,
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "shortcutName": "TurboCraft Launcher"
+    "shortcutName": "TurboCraft Launcher",
+    "artifactName": "TurboCraft-Launcher-PC-${version}-Setup-${arch}.${ext}"
+  },
+  "portable": {
+    "artifactName": "TurboCraft-Launcher-PC-${version}-Portable-${arch}.${ext}"
   },
   "linux": {
     "icon": "build-resources/icon.png",
+    "maintainer": "TCL Team <team@turbocraft.app>",
     "category": "Game",
-    "synopsis": "TurboCraft Launcher — Modern Minecraft: Java Edition Launcher for PC",
+    "synopsis": "TurboCraft Launcher - Modern Minecraft: Java Edition Launcher for PC",
     "target": [
       {
         "target": "AppImage",
         "arch": [
-          "x64",
-          "arm64"
+          "x64"
         ]
       },
       {
@@ -56,11 +60,12 @@
         ]
       }
     ],
-    "artifactName": "TurboCraft-Launcher-PC-${version}-${arch}.${ext}"
+    "artifactName": "TurboCraft-Launcher-PC-${version}-Linux-${arch}.${ext}"
   },
   "mac": {
     "icon": "build-resources/icon.png",
     "category": "public.app-category.games",
+    "identity": null,
     "target": [
       {
         "target": "dmg",
@@ -68,15 +73,8 @@
           "x64",
           "arm64"
         ]
-      },
-      {
-        "target": "zip",
-        "arch": [
-          "x64",
-          "arm64"
-        ]
       }
     ],
-    "artifactName": "TurboCraft-Launcher-PC-${version}-${arch}.${ext}"
+    "artifactName": "TurboCraft-Launcher-PC-${version}-macOS-${arch}.${ext}"
   }
 }

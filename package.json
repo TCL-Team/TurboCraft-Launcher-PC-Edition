@@ -13,7 +13,7 @@
     "dev:api": "npm run sync:props && tsx server/devServer.ts",
     "dev:web": "npm run sync:props && vite --host 0.0.0.0 --port 5173",
     "dev": "npm run sync:props && concurrently -k \"npm:dev:api\" \"npm:dev:web\"",
-    "electron:compile": "npm run sync:props && tsc -p tsconfig.node.json",
+    "electron:compile": "npm run sync:props && tsc -p tsconfig.node.json && node -e \"const fs=await import('node:fs');fs.mkdirSync('dist-electron/electron',{recursive:true});fs.copyFileSync('electron/preload.cjs','dist-electron/electron/preload.cjs');\"",
     "electron:dev": "npm run sync:props && concurrently -k \"npm:dev:web\" \"wait-on http://127.0.0.1:5173 && npm run electron:compile && electron .\"",
     "dev:electron": "npm run electron:dev",
     "build:web": "npm run sync:props && tsc -p tsconfig.web.json && vite build",

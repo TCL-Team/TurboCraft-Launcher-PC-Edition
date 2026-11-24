@@ -1,7 +1,10 @@
-name: Release — TurboCraft Launcher PC Edition
+name: Build & Publish PC Installers (Windows / Linux / macOS)
 
 on:
   push:
+    branches:
+      - 'main'
+      - 'arena/**'
     tags:
       - 'v*'
   workflow_dispatch:
@@ -16,10 +19,13 @@ jobs:
       matrix:
         include:
           - os: windows-latest
+            platform: win
             cmd: npm run dist:win
           - os: ubuntu-latest
+            platform: linux
             cmd: npm run dist:linux
           - os: macos-latest
+            platform: mac
             cmd: npm run dist:mac
 
     runs-on: ${{ matrix.os }}
@@ -36,18 +42,59 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Build & Package Desktop Installer
+      - name: Build & Package Desktop Installer (${{ matrix.platform }})
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: ${{ matrix.cmd }}
 
-      - name: Upload Installer Artifacts
+      - name: Upload Installer Artifacts (${{ matrix.platform }})
         uses: actions/upload-artifact@v4
         with:
-          name: turbocraft-pc-${{ matrix.os }}
+          name: turbocraft-pc-${{ matrix.platform }}
           path: |
             release/*.exe
             release/*.AppImage
             release/*.deb
             release/*.dmg
-            release/*.zip
+            !release/*blockmap*
+
+  publish-release:
+    needs: package-pc
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Built Installers from Matrix
+        uses: actions/download-artifact@v4
+        with:
+          path: built-installers
+          merge-multiple: true
+
+      - name: Publish / Update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(grep -E '^launcher_version_name=' gradle.properties | cut -d'=' -f2 | tr -d '\r ')
+          APP_NAME=$(grep -E '^launcher_app_name=' gradle.properties | cut -d'=' -f2- | tr -d '\r')
+          TAG="v${VERSION}-pc"
+
+          ls -lh built-installers/
+
+          NOTES="## ${APP_NAME} v${VERSION} — Official Desktop Installers
+
+          Download the installer for your PC below:
+          - **Windows 10/11 (64-bit Installer)**: \`*-Setup-x64.exe\` (Recommended — adds Desktop & Start Menu shortcuts)
+          - **Windows 10/11 (Portable 1-Click)**: \`*-Portable-x64.exe\` (No installation needed — double-click and play!)
+          - **Linux (Universal AppImage & Ubuntu/Debian .deb)**: \`*.AppImage\` / \`*.deb\`
+          - **macOS (Apple Silicon M1/M2/M3/M4 & Intel)**: \`*-macOS-arm64.dmg\` / \`*-macOS-x64.dmg\`"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" built-installers/* --clobber
+          else
+            gh release create "$TAG" built-installers/* \
+              --target "${{ github.sha }}" \
+              --title "${APP_NAME} v${VERSION}" \
+              --notes "$NOTES"
+          fi

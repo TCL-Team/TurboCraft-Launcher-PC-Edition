@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, shell, Tray, Menu, nativeImage } from 'ele
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TurboCraftLauncherCore } from '../server/launcherCore.js';
-import { dispatchCoreRpc } from '../server/devServer.js';
+import { dispatchCoreRpc } from '../server/rpcDispatcher.js';
 import { BuildKeys } from '../src/generated/buildConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +18,7 @@ async function createWindow() {
   await launcherCore.init();
 
   const iconPath = app.isPackaged
-    ? path.join(process.resourcesPath, 'app.asar', 'dist', 'assets', 'turbocraft-icon.png')
+    ? path.join(__dirname, '../../dist/assets/turbocraft-icon.png')
     : path.join(process.cwd(), 'public', 'assets', 'turbocraft-icon.png');
 
   mainWindow = new BrowserWindow({
@@ -31,7 +31,7 @@ async function createWindow() {
     icon: iconPath,
     title: BuildKeys.LAUNCHER_APP_NAME,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
@@ -54,7 +54,8 @@ async function createWindow() {
     }
   });
 
-  const devServerUrl = process.env.VITE_DEV_SERVER_URL || (!app.isPackaged ? 'http://127.0.0.1:5173' : '');
+  const devServerUrl =
+    process.env.VITE_DEV_SERVER_URL || (!app.isPackaged ? 'http://127.0.0.1:5173' : '');
   if (devServerUrl) {
     await mainWindow.loadURL(devServerUrl);
   } else {
@@ -93,7 +94,10 @@ async function createWindow() {
 ipcMain.handle('tcl:rpc', async (_event, payload: { method: string; args?: Record<string, any> }) => {
   if (!launcherCore) throw new Error('Launcher core not initialized');
   const res = await dispatchCoreRpc(launcherCore, payload.method, payload.args || {});
-  if (payload.method === 'launchGame' && launcherCore.getBootstrapState().settings.minimizeOnLaunch) {
+  if (
+    (payload.method === 'launchGame' || payload.method === 'launchInstance') &&
+    launcherCore.getBootstrapState().settings.minimizeOnLaunch
+  ) {
     mainWindow?.minimize();
   }
   return res;
@@ -122,12 +126,13 @@ ipcMain.handle('tcl:openFolder', async (_event, relPath: string) => {
   }
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  void createWindow();
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) void createWindow();
+  });
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
-});
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) void createWindow();
 });
