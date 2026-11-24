@@ -1,0 +1,53 @@
+name: Release — TurboCraft Launcher PC Edition
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package-pc:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            cmd: npm run dist:win
+          - os: ubuntu-latest
+            cmd: npm run dist:linux
+          - os: macos-latest
+            cmd: npm run dist:mac
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build & Package Desktop Installer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ${{ matrix.cmd }}
+
+      - name: Upload Installer Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: turbocraft-pc-${{ matrix.os }}
+          path: |
+            release/*.exe
+            release/*.AppImage
+            release/*.deb
+            release/*.dmg
+            release/*.zip

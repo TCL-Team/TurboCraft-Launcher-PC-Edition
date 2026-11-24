@@ -1,0 +1,25 @@
+/* AUTO-GENERATED FROM gradle.properties BY scripts/syncProperties.mjs — DO NOT EDIT DIRECTLY */
+
+export const BuildKeys = {
+  LAUNCHER_NAME: "TurboCraft Launcher",
+  LAUNCHER_APP_NAME: "TurboCraft Launcher — PC Edition",
+  LAUNCHER_SHORT_NAME: "TCL",
+  LAUNCHER_APP_ID: "com.tcl.mc.pc",
+  LAUNCHER_COPYRIGHT: "Copyright (C) 2026 TCL Team (GPL-3.0)",
+  LAUNCHER_VERSION_CODE: 9,
+  LAUNCHER_VERSION_NAME: "1.6.0",
+  URL_HOME: "https://github.com/TCL-Team/TurboCraft-Launcher-PC-Edition",
+  URL_MOBILE_REPO: "https://github.com/TCL-Team/TurboCraft-Launcher",
+  URL_DISCORD: "https://discord.gg/bwkpJZB6NS",
+  URL_YOUTUBE: "https://youtube.com/@TurboCraft_Launcher",
+  URL_GITHUB_ORG: "https://github.com/TCL-Team",
+  OAUTH_CLIENT_ID: "00000000402b5328",
+  CURSEFORGE_API_KEY: "",
+  DISCORD_APP_ID: "",
+  SOCIAL_SUPABASE_URL: "https://qvjanukzamquosjxhxnc.supabase.co",
+  SOCIAL_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_ErkdgkvWDiVqY6_xE0mZAw_yj-nptNo",
+  DEFAULT_THEME: "VERDANT_DAWN",
+  DEFAULT_CUSTOM_HEX: "#8BE51B",
+  DEFAULT_FESTIVAL_EFFECT: "fireflies",
+  DEFAULT_RAM_MB: 4096,
+} as const;

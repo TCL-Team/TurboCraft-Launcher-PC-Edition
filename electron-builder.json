@@ -1,0 +1,82 @@
+{
+  "appId": "com.tcl.mc.pc",
+  "productName": "TurboCraft Launcher — PC Edition",
+  "copyright": "Copyright (C) 2026 TCL Team (GPL-3.0)",
+  "directories": {
+    "buildResources": "build-resources",
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*",
+    "package.json"
+  ],
+  "win": {
+    "icon": "build-resources/icon.png",
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      },
+      {
+        "target": "portable",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "artifactName": "TurboCraft-Launcher-PC-${version}-${arch}.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "TurboCraft Launcher"
+  },
+  "linux": {
+    "icon": "build-resources/icon.png",
+    "category": "Game",
+    "synopsis": "TurboCraft Launcher — Modern Minecraft: Java Edition Launcher for PC",
+    "target": [
+      {
+        "target": "AppImage",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      },
+      {
+        "target": "deb",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "artifactName": "TurboCraft-Launcher-PC-${version}-${arch}.${ext}"
+  },
+  "mac": {
+    "icon": "build-resources/icon.png",
+    "category": "public.app-category.games",
+    "target": [
+      {
+        "target": "dmg",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      },
+      {
+        "target": "zip",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      }
+    ],
+    "artifactName": "TurboCraft-Launcher-PC-${version}-${arch}.${ext}"
+  }
+}

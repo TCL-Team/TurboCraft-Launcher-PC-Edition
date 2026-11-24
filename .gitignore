@@ -1,0 +1,26 @@
+# Dependencies & build outputs
+node_modules/
+dist/
+dist-electron/
+dist-server/
+release/
+out/
+build/
+coverage/
+
+# Runtime launcher data (created locally in dev/sandbox)
+.turbocraft-data/
+.LauncherData/
+
+# Logs & OS files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Local secrets
+.env
+.env.local
+.discord_app_id.txt
+.oauth_client_id.txt
+.curseforge_api.txt

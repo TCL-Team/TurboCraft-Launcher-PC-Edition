@@ -1,0 +1,52 @@
+{
+  "name": "turbocraft-launcher-pc-edition",
+  "productName": "TurboCraft Launcher",
+  "version": "1.6.0",
+  "description": "TurboCraft Launcher — PC Edition — Desktop Minecraft: Java Edition Launcher",
+  "license": "GPL-3.0-only",
+  "author": "TCL Team <https://github.com/TCL-Team>",
+  "homepage": "https://github.com/TCL-Team/TurboCraft-Launcher-PC-Edition",
+  "type": "module",
+  "main": "dist-electron/electron/main.js",
+  "scripts": {
+    "sync:props": "node scripts/syncProperties.mjs",
+    "dev:api": "npm run sync:props && tsx server/devServer.ts",
+    "dev:web": "npm run sync:props && vite --host 0.0.0.0 --port 5173",
+    "dev": "npm run sync:props && concurrently -k \"npm:dev:api\" \"npm:dev:web\"",
+    "electron:compile": "npm run sync:props && tsc -p tsconfig.node.json",
+    "electron:dev": "npm run sync:props && concurrently -k \"npm:dev:web\" \"wait-on http://127.0.0.1:5173 && npm run electron:compile && electron .\"",
+    "dev:electron": "npm run electron:dev",
+    "build:web": "npm run sync:props && tsc -p tsconfig.web.json && vite build",
+    "build": "npm run build:web && npm run electron:compile",
+    "dist": "npm run build && electron-builder --publish never",
+    "dist:win": "npm run build && electron-builder --win --publish never",
+    "dist:linux": "npm run build && electron-builder --linux --publish never",
+    "dist:mac": "npm run build && electron-builder --mac --publish never",
+    "typecheck": "npm run sync:props && tsc -p tsconfig.web.json --noEmit && tsc -p tsconfig.node.json --noEmit"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "lucide-react": "^0.475.0",
+    "marked": "^15.0.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "skinview3d": "^3.4.1",
+    "tar": "^7.4.3"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.4",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8",
+    "express": "^4.21.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "wait-on": "^8.0.2"
+  }
+}
